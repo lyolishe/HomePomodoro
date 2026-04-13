@@ -56,7 +56,7 @@ class Pomodoro: ObservableObject {
 
 class AppModel: ObservableObject {
     @Published var currentPomodoro: Pomodoro?
-    @Published var timerDuaration: Int = 1
+    @Published var timerDuaration: Int = 45
         
     func startSession () {
         self.currentPomodoro = Pomodoro(duarationMin: self.timerDuaration) {

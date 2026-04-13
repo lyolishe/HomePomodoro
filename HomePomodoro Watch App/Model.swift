@@ -8,9 +8,11 @@
 import Foundation
 import Combine
 import WatchKit
+import EventKit
 
 class Pomodoro: ObservableObject {
     var timer: Publishers.Autoconnect<Timer.TimerPublisher>?
+    let timeStarted: Date = Date()
     var onEnd: () -> Void
     
     @Published var duaration: Int
@@ -57,7 +59,8 @@ class Pomodoro: ObservableObject {
 class AppModel: ObservableObject {
     @Published var currentPomodoro: Pomodoro?
     @Published var timerDuaration: Int = 45
-        
+    private let eventStore = EKEventStore()
+    
     func startSession () {
         self.currentPomodoro = Pomodoro(duarationMin: self.timerDuaration) {
             self.currentPomodoro = nil;
@@ -71,6 +74,26 @@ class AppModel: ObservableObject {
             currentPomodoro.endSession();
             self.currentPomodoro = nil;
         }
+    }
+    
+    func setToCalendar() {
+        if let currentPomodoro = self.currentPomodoro {
+            eventStore.requestAccess(to: .event ) { (granted, error) in
+                if granted {
+                    let newEvent = EKEvent(eventStore: self.eventStore)
+                    newEvent.title = "Помидорка"
+                    newEvent.startDate = currentPomodoro.timeStarted;
+                    newEvent.endDate = Date()
+                    newEvent.calendar = self.eventStore.calendar(withIdentifier: "HomePomodoro")
+                    
+                    do {
+                        // Saving calendar events on watchOS is not avaliable.
+                        // TODO: write mobile app and process calendar events there.
+                        // try self.eventStore.save(newEvent, commit: true)
+                    }
+                }
+            }
+        } else {return}
     }
 }
 

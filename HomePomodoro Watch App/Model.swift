@@ -12,10 +12,12 @@ class Pomodoro: ObservableObject {
     var timer: Publishers.Autoconnect<Timer.TimerPublisher>?
     var onEnd: () -> Void
     
+    @Published var duaration: Int
     @Published var timeLeft: Int
     
-    init(duarationMin: Float, onEnd: @escaping () -> Void) {
-        self.timeLeft = Int(duarationMin*60);
+    init(duarationMin: Int, onEnd: @escaping () -> Void) {
+        self.duaration = duarationMin*60
+        self.timeLeft = duarationMin*60;
         self.onEnd = onEnd;
     }
     
@@ -53,7 +55,7 @@ class Pomodoro: ObservableObject {
 
 class AppModel: ObservableObject {
     @Published var currentPomodoro: Pomodoro?
-    @Published var timerDuaration: Float = 0.2
+    @Published var timerDuaration: Int = 1
         
     func startSession () {
         self.currentPomodoro = Pomodoro(duarationMin: self.timerDuaration) {

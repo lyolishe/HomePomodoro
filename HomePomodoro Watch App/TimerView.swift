@@ -11,14 +11,22 @@ struct TimerView: View {
     @StateObject var pom: Pomodoro
     
     var body: some View {
-        Circle()
-            .strokeBorder(.red, lineWidth: 8)
-            .padding()
-            .overlay(
-                Text(self.pom.timeUI)
-                    .onReceive(self.pom.timer!) {_ in
-                        self.pom.tick()
-                    }
-            )
+        ZStack {
+            Circle()
+                .stroke(.yellow, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                .padding()
+                .overlay(
+                    Text(self.pom.timeUI)
+                        .onReceive(self.pom.timer!) {_ in
+                            self.pom.tick()
+                        }
+                )
+            Circle()
+                .trim(from: 0, to: CGFloat(self.pom.timeLeft)/CGFloat(self.pom.duaration))
+                .stroke(.purple, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.linear(duration: 1), value: self.pom.timeLeft)
+                .padding()
+        }
     }
 }

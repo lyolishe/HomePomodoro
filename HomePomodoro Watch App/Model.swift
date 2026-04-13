@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import WatchKit
 
 class Pomodoro: ObservableObject {
     var timer: Publishers.Autoconnect<Timer.TimerPublisher>?
@@ -60,6 +61,7 @@ class AppModel: ObservableObject {
     func startSession () {
         self.currentPomodoro = Pomodoro(duarationMin: self.timerDuaration) {
             self.currentPomodoro = nil;
+            WKInterfaceDevice.current().play(.notification)
         }
         self.currentPomodoro?.startSession()
     }

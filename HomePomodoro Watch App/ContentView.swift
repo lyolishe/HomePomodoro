@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var m = AppModel()
+    @StateObject private var m = AppController()
     
     var body: some View {
         if self.m.currentPomodoro !== nil {
@@ -18,11 +18,13 @@ struct ContentView: View {
                 }
         } else {
             VStack {
-                Button("Start session of \(String(self.m.timerDuaration))") {
+                Button("Start session of \(String(Int(self.m.timerDuaration)))") {
                     self.m.startSession()
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.green)
+                .focusable()
+                .digitalCrownRotation(self.$m.timerDuaration, from: 1, through: 59, by: 1)
             }
             .padding()
         }
